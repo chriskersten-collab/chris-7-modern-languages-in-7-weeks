@@ -1,0 +1,49 @@
+Didn't work:
+SELECT applications_sent 
+	CASE
+	  WHEN applications_sent = 0 THEN 'None'
+	  WHEN applications_sent > 0 AND applications_sent < 10 THEN 'Some'
+      ELSE 'A lot'
+	END AS effort_level
+FROM applications;
+
+Works:
+SELECT company FROM applications WHERE applications_sent > 5 AND response = false;
+SELECT * FROM applications WHERE applications_sent > 5 AND response = false;
+SELECT * FROM applications;
+
+Didn't work:
+SELECT * 
+	CASE
+		WHEN applications_sent = 0 THEN 'None'
+	END AS effort_level
+FROM applications;
+
+works!
+SELECT company, applications_sent, 
+	CASE
+		WHEN applications_sent = 0 THEN 'None'
+		WHEN applications_sent < 10 THEN 'Some'
+		ELSE 'A lot'
+	END AS effort_level
+FROM applications;
+
+Works, example code:
+SELECT company
+FROM applications
+WHERE
+    CASE
+        WHEN applications_sent >= 10 THEN 'A lot'
+        ELSE 'Not a lot'
+    END = 'A lot'
+AND response = true;
+
+Works, example code:
+SELECT company
+FROM applications
+WHERE applications_sent >= 10
+  AND response = true;
+
+Written explanation:
+CASE WHEN in SQL applies a logical statement to a field, an entire column in a table. Python's if statement applies logic to an individual value of a variable. SQL automatically iterates through the entire data set.
+
