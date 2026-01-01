@@ -1,0 +1,2 @@
+Hello from TypeScript!
+Appending a new line.
