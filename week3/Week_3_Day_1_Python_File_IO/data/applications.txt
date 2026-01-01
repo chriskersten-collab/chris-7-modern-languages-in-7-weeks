@@ -1,0 +1,3 @@
+
+Example 5: File paths
+This is the file applications.txt
