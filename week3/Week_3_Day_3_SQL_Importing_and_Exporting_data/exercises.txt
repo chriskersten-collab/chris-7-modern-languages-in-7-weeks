@@ -1,0 +1,51 @@
+Exercise 1 — Create Table
+Write the SQL to create the applications table.
+CREATE TABLE applications (
+    company TEXT,
+    applications_sent INTEGER,
+    response BOOLEAN
+);
+
+Exercise 2 — Import CSV
+Use \copy to import your CSV into PostgreSQL.
+\copy applications(company, applications_sent, response)
+FROM 'C:/path/to/applications.csv'
+DELIMITER ','
+CSV HEADER;
+
+Exercise 3 — Verify Data
+Write a SELECT query showing all rows.
+SELECT * FROM applications;
+
+Exercise 4 — Export Query
+Export only companies with a response to responded.csv.
+I suppose that "only companies with a response" means response = true
+\copy (
+    SELECT company, applications_sent
+    FROM applications
+    WHERE response = true
+)
+TO 'C:/path/to/responded.csv'
+CSV HEADER;
+
+Exercise 5 — Comparison (Written)
+
+In 1–2 sentences, explain:
+Why is SQL import/export preferred over loading CSVs directly in application code for large datasets?
+It is easier and safer to edit a CSV file for import than to hard-code data for a table into application code. Another advantage would be that the CSV file can be more easily exported from another data source.
+
+Go Further (Optional, Strong Signal)
+Try one:
+
+Add a PRIMARY KEY
+(trying to add it to an existing table didn't work, making a new table did work.)
+CREATE TABLE applications ( company_id INT PRIMARY KEY, company TEXT, applications_sent INTEGER, response BOOLEAN );
+
+Use COPY vs \copy and explain the difference
+COPY applications(company_id, company, applications_sent, response) FROM 'P:\Documents\PythonLessons\week3\Week_3_Day_3_SQL_Importing_and_Exporting_data\applications.csv' DELIMITER ',' CSV;
+\copy applications(company_id, company, applications_sent, response) FROM 'P:\Documents\PythonLessons\week3\Week_3_Day_3_SQL_Importing_and_Exporting_data\applications.csv' DELIMITER ',' CSV;
+Considering the instructions, \copy runs locally, while COPY runs on the server.
+
+
+Export a filtered query using JOIN (if you want a challenge)
+\copy ( SELECT applications.company, applications.response, contacts.contact FROM applications INNER JOIN contacts ON contacts.company = applications.company ) TO 'P:\Documents\PythonLessons\week3\Week_3_Day_3_SQL_Importing_and_Exporting_data\join_results.csv' CSV HEADER;
