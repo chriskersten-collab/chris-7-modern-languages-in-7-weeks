@@ -1,0 +1,102 @@
+Exercise 1 — NOT NULL Constraints
+
+good:
+DROP TABLE IF EXISTS applications;
+
+good:
+CREATE TABLE applications (
+    id SERIAL PRIMARY KEY,
+    company TEXT NOT NULL,
+    applications_sent INTEGER NOT NULL,
+    response BOOLEAN NOT NULL
+);
+
+show all rows:
+SELECT * FROM applications;
+
+Intentionally gives error:
+INSERT INTO applications (applications_sent, response)
+VALUES (5, true);
+
+Exercise 2 — CHECK Constraints (Business Rules)
+ALTER TABLE applications
+ADD CONSTRAINT applications_sent_non_negative
+CHECK (applications_sent >= 0);
+
+Intentionally gives error:
+INSERT INTO applications (company, applications_sent, response)
+VALUES ('OpenAI', -3, true);
+
+Exercise 3 — UNIQUE Constraints
+ALTER TABLE applications
+ADD CONSTRAINT unique_company UNIQUE (company);
+
+Good:
+INSERT INTO applications (company, applications_sent, response)
+VALUES ('Google', 3, false);
+
+Intentionally gives error:
+INSERT INTO applications (company, applications_sent, response)
+VALUES ('Google', 5, true);
+
+Exercise 4 — DEFAULT Values
+ALTER TABLE applications
+ALTER COLUMN response SET DEFAULT false;
+
+good:
+INSERT INTO applications (company, applications_sent)
+VALUES ('Spotify', 2);
+
+Exercise 5 — Foreign Key Constraints (Real-World Pattern)
+DROP TABLE IF EXISTS contacts;
+
+Create a parent table
+CREATE TABLE contacts (
+    id SERIAL PRIMARY KEY,
+    company TEXT UNIQUE NOT NULL,
+    recruiter_email TEXT NOT NULL
+);
+
+Add matching records into contacts:
+INSERT INTO contacts (company, recruiter_email)
+VALUES ('Google', 'recruiter@google.com');
+
+INSERT INTO contacts (company, recruiter_email)
+VALUES ('Spotify', 'recruiter@spotify.com');
+
+Add a foreign key
+ALTER TABLE applications
+ADD CONSTRAINT fk_company
+FOREIGN KEY (company)
+REFERENCES contacts(company);
+
+Example of inserting a new record safely to both tables:
+BEGIN;
+
+INSERT INTO contacts (company, recruiter_email)
+VALUES ('OpenAI', 'recruiter@openai.com')
+ON CONFLICT (company) DO NOTHING;
+
+INSERT INTO applications (company, applications_sent, response)
+VALUES ('OpenAI', 3, true);
+
+COMMIT;
+
+Continuing with Exercise 5 — Foreign Key Constraints (Real-World Pattern)
+Intentionally fails:
+INSERT INTO applications (company, applications_sent)
+VALUES ('Spudify', 1);
+
+Exercise 7 — Transactions (Error Rollback)
+BEGIN;
+
+INSERT INTO applications (company, applications_sent)
+VALUES ('ValidCompany', 3);
+
+INSERT INTO applications (company, applications_sent)
+VALUES (NULL, 2);
+
+ROLLBACK;
+
+Check Exercise 7 — Transactions (Error Rollback)
+SELECT * FROM applications WHERE company = 'ValidCompany';
