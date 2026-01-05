@@ -5,7 +5,8 @@ import (
 	"os"
 )
 
-func main() {
+/* func main() { */
+func Examples() {
 	fmt.Println("Example 1 — Write a File")
 	content := []byte("Name:Chris\nDate:2026-Jan-03\nHours studied:2\n")
 	err := os.WriteFile("study_log.txt", content, 0644)

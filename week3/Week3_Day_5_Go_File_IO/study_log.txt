@@ -1,3 +1,4 @@
-company,applications_sent,response
-OpenAI,3,true
-Google,2,false
+Your name: Chris
+Today's Date: 2026-Jan-03
+Hours studied today: 2
+New line appended
