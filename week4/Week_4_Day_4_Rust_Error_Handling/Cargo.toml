@@ -1,0 +1,6 @@
+[package]
+name = "Week_4_Day_4_Rust_Error_Handling"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
