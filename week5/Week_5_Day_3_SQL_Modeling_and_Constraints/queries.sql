@@ -5,7 +5,9 @@ try running it with:
 That didn't work, permission denied.
 
 Try the shell command:
-psql -U username -d databasename -f /path/to/yourfile.sql
+"c:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres -f "P:\Documents\PythonLessons\week5\Week_5_Day_3_SQL_Modeling_and_Constraints\extra_credit_unique.sql"
+It works in cmd, but not in VS Code terminal. 
+Also added C:\Users\chris\AppData\Roaming\postgresql\pg_service.conf to keep credentials out of command line.
 
 */
 
