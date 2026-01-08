@@ -18,13 +18,13 @@ console.log(application);
 application.response = false;
 console.log(application);
 
-type JobApplication = {
+type WeekTwoJobApplication = {
   company: string;
   role: string;
   applicationsSent: number;
   response: boolean;
 };
-const app: JobApplication = {
+const WeekTwoApp: WeekTwoJobApplication = {
   company: "Google",
   role: "Data Scientist",
   applicationsSent: 5,
@@ -56,43 +56,41 @@ console.log("Exercise 1:");
 console.log(myCompanies);
 
 /* Exercise 2 — Typed Object
-Define a JobApplication type.
+Define a WeekTwoJobApplication type.
 Create one object and print its fields. */
-type JobApplicationType = {
-  company: string;
-  role: string;
-  response: boolean;
-}
-const myApplication: JobApplicationType = {
+const myApplication: WeekTwoJobApplication = {
   company: "Apple",
   role: "Data Analyst",
   response: false,
+  applicationsSent: 0
 };
 console.log("Exercise 2:");
 console.log("Company:", myApplication.company);
 console.log("Role:", myApplication.role);
 
 /* Exercise 3 — Array of Objects
-Create an array of JobApplication.
+Create an array of WeekTwoJobApplication.
 Loop and print:
 company
 response */
-const applicationArray: JobApplicationType[] = [
+const applicationArray: WeekTwoJobApplication[] = [
   {
     company: "Apple",
     role: "Data Analyst",
     response: false,
+    applicationsSent: 0
   },
   {
     company: "Google",
     role: "Data Scientist",
     response: true,
+    applicationsSent: 0
   },
 ];
 console.log("Exercise 3:");
-for (const app of applicationArray) {
-  console.log("Company:", app.company);
-  console.log("Response:", app.response);
+for (const WeekTwoApp of applicationArray) {
+  console.log("Company:", WeekTwoApp.company);
+  console.log("Response:", WeekTwoApp.response);
 }
 
 /* Exercise 4 — Sets
@@ -115,18 +113,19 @@ in the development process, whereas Python's dynamic typing can lead to
 runtime errors that are harder to detect and debug. */
 
 /* Go Further (Optional)
-Use Map<string, JobApplication>
+Use Map<string, WeekTwoJobApplication>
 Make a readonly object
 Write a typed function returning a string */
-const applicationMap: Map<string, JobApplicationType> = new Map();
+const applicationMap: Map<string, WeekTwoJobApplication> = new Map();
 applicationMap.set("Apple", {
   company: "Apple",
   role: "Data Analyst",
   response: false,
+  applicationsSent: 0
 });
 interface Point {
   readonly readOnlyExample: number;
 }
-function getApplicationSummary(app: JobApplicationType): string {
-  return `Application to ${app.company}`;
+function getApplicationSummary(WeekTwoApp: WeekTwoJobApplication): string {
+  return `Application to ${WeekTwoApp.company}`;
 }
