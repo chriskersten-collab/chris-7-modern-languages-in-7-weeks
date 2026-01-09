@@ -1,0 +1,3 @@
+module Week_5_Day_5_Go_Interfaces_Structs_and_Functional_Style
+
+go 1.25.5
