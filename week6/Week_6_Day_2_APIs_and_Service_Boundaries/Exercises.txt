@@ -1,0 +1,104 @@
+🧪 Exercise 1 — What Is an API? (Written)
+Answer in your own words:
+
+1. What is an API? An Application Programming Interface is a set of rules and protocols that enables
+ different software applications to communicate with each other and exchange data. 
+ It acts as a messenger or intermediary, allowing one application to request services or information 
+ from another without needing to know the technical details of how the other system is built internally. 
+
+2. Why do we use APIs instead of directly accessing databases? A database API, such as PostgreSQL or Oracle is 
+thoroughly tested and understood. There is no need to re-invent a database interface, when there are many good choices
+already available, saving time and resources. Using a well-established database can also help with reliability and security, 
+again because it is thoroughly tested and well-understood.
+
+3. Give one real-world analogy for an API. In a more general sense, I have seen an interface control document, which can
+describe an API, but can also describe other types of interfaces: electrical, RF, mechanical, anything. 
+So, a major part of an API would be documentation that describes the API. Another part would be the public-facing software 
+interfaces, which should be described by the documentation. 
+
+✍️ Write 1–2 sentences per question.
+
+
+🧪 Exercise 2 — Identify API Boundaries
+You have a Job Application Tracker with:
+- UI (CLI or Web)
+- Backend logic
+- Database
+
+Answer in bullets:
+- What data flows from UI → backend?
+    - User input:
+        - Company name(s)
+        - Application status
+            - Response
+            - Times applied
+        - Contact(s) at a Company
+            - name
+            - email address
+            - title
+            - other optional information
+        - Database queries, possibly made user friendly with a website and/or GUI.
+- What data flows from backend → UI?
+    - Results from queries
+        - Previously entered user input: Company names, application status, contact information
+- What data should never flow directly to the UI?
+    - UI for non-technical users:
+        - Hidden key(s) in the database
+        - Errors that are difficult to understand. If an error is expected, such as invalid user input, 
+            it should be explained so that a non-technical user can understand what went wrong and how to
+            correctly format input. Another example of an expected error is the database being unavailable. 
+            The user should be informed that the service is temporarily unavailable, try again later.
+            Unexpected errors can be passed to the user, if the language has thorough error coverage, like rust.
+            Other languagues, such as Python, do not have such protections, so an error that is difficult to understand or
+            meaningless to a non-technical user should be logged and reported to a bug tracker.
+    - UI for technical users - developers, admins - never say never! All information should be available. That's assuming that
+        error logs and bug reports are part of the UI.
+
+👉 Do not write code.
+
+
+🧪 Exercise 3 — API Contract Thinking (Critical Skill)
+Imagine this API endpoint:
+POST /applications
+    Not quite sure what that means, so I will start with a description that I looked up: 
+    "A POST /applications API example involves sending a request to create a new application resource on a server. 
+    The request typically uses the HTTP POST method, specifies a JSON body containing the new application's data, 
+    and includes relevant HTTP headers. "
+    That reminds me of when I was using a REST API with a web interface for a database. I probably forgot what it was called.
+
+Answer briefly:
+1. What input data does it need?  Request for data, usually JSON. Also, usually authentication information.
+2. What does a successful response look like? relevant JSON data.
+3. What errors might it return? Authentication failed, permission denied, no records found.
+4. Who is responsible for validation: UI or API? Not sure, both, I suppose.
+There are no perfect answers — explain your reasoning. 
+
+🧠 Concept Check (Write as Comments)
+Answer in 1–2 sentences each:
+Why are APIs considered contracts? An API often is the interface between two independent organizations, such as companies. 
+    In that case, a contract between the two groups will include the API or a description of interfaces.
+What breaks when an API changes unexpectedly? Everyone who was not informed of the change is at risk of something breaking.
+Why is backward compatibility important? That's related to the previous question about what breaks when an API changes 
+    unexpectedly. If the change is backward-compatible, it won't break anything. For example, keeping all existing code the
+    same, but adding features. If existing features are deprecated without warning, then whoever uses those features
+    loses compatibility.
+
+⭐ Go Further (Strong Signal) Pick one:
+
+Option A — ASCII Diagram, Draw: Client → API → Service → Database, Label responsibilities.
+
+Option B — Versioning Thought
+Explain (in words):
+- What could go wrong if /applications changes its response shape? 
+    Not quite sure what that means, so I looked it up: 
+        The API response shape refers to the defined blueprint or structure of the data that an API (server) returns 
+        to a client after processing a request.
+    Similar to the previous questions about backward compatibility and unexpected change, a change in response shape might
+    break compatibility, and also violate a contract.
+- How versioning (e.g. /v1/applications) helps.
+    I suppose that versioning with APIs is similar to versioning of software requirements, which I have some experience with.
+    Versioning is helpful because different clients (or customers) might be using different versions:
+    Previous releases
+    Current release, but different versions - Free trial, paid version, special custom version for one customer.
+    It is necessray to keep track of versions of the API and related documentation so different groups can be
+    "on the same page".

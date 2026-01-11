@@ -1,0 +1,113 @@
+🧪 Exercise 1 — What Is “State”? (Written)
+
+Answer in your own words:
+
+What does “state” mean in a software system? 
+It is the data that an application, object, or system remembers from one point in time to the next.
+
+Give 2 examples of state in a Job Application Tracker.
+1. The SQL database made as part of the lessons.
+2. Files in the File IO examples.
+
+What is stateless in such a system? 
+Most of the examples and exercises, if stateless means that each request is an independent, isolated transaction. 
+Also, the user interface is stateless.
+
+✍️ Write 1–2 sentences per question.
+👉 Do not write code.
+
+🧪 Exercise 2 — Where State Lives
+
+For a Job Application Tracker, identify where state might live:
+
+In memory (RAM)
+State can be stored in RAM, but so far with the application tracker, it is not. 
+RAM usually stores the state being processed, and transferred between the disk and UI. 
+A risk is that state is lost when the application is shut down.
+
+On disk
+For the job application tracer, state about positions applied to is stored on disk, 
+usually part of example code, but also in files. A risk is that disk storage is slower than RAM.
+
+In a database
+For the job application tracer, state about positions applied to is also stored in a database.
+Lie disk storage, database storage is slower than RAM.
+
+In the client (UI)
+No state is currently stored in the UI for the application tracker. 
+
+For each, write 1 sentence describing:
+What kind of state lives there
+One risk of storing state there
+
+🧪 Exercise 3 — Consistency vs Availability (CAP Thinking Lite)
+Imagine this scenario:
+A user submits a job application, then immediately refreshes and checks the list.
+
+Answer briefly:
+
+What could go wrong? The request could be rejected. Old data could still be presented to the user.
+
+Which is worse here:
+Showing stale data
+Or rejecting the request?
+Rejecting the request.
+
+Why?
+If the request is rejected, the user might wonder what has gone wrong, could it be their network connection?
+If stale data is shown, that gives the user more information: The updates haven't been fully processed yet, or
+something went wrong when receiving the new data.
+
+👉 No need to mention CAP theorem by name — just reason it out.
+
+🧪 Exercise 4 — Idempotency (Critical Concept)
+Answer in your own words:
+What does it mean for an operation to be idempotent?
+Idempotency is a property where applying an operation multiple times yields the same result as applying it once, 
+preventing unintended side effects like duplicates.
+
+Why is idempotency important for APIs?
+So that retries after failures don't corrupt data or double-charge customers. For example, in the previous question, the user
+submitted an application, then immediately refreshed the list. If the system returns the old list, they might re-submit their
+application. A dupliicate application should not be stored, so the new application would be rejected.
+
+Is POST /applications usually idempotent? Why or why not? Yes, for the same reason: there should not be duplicate data, 
+so making POST /applications idempotent would prevent duplicate requests from creating duplicate data.
+
+✍️ 1–2 sentences per answer.
+
+
+🧪 Exercise 5 — Failure Scenarios (Design Thinking)
+For each failure, answer:
+What should the system do?
+What should the user see?
+
+Failures:
+
+API receives the same request twice
+Reject the duplicate request. 
+Most users don't need to know their request has been rejected, but the transaction should be logged.
+
+Database write succeeds but response fails
+Inform the user about the service being temporarily unavailable, try again later. Maybe set a timer, and automatically retry
+a few times, such as 3 re-tries after 2 seconds delay for each failed attempt.
+
+API crashes mid-request
+I suppose there could be some kind of timeout on the client or UI, to tell the user that their request could not be completed.
+
+There are no perfect answers — explain your tradeoffs.
+
+🧠 Concept Check (Write as Comments)
+Answer briefly:
+
+Why is managing state harder in distributed systems? There is more latency, and network slow-downs can mean that the 
+latency is different every time. It's also possible that packets could be lost, meaning there should be ckecksums and retries
+somewhere in the communications system.
+
+Why do retries cause bugs?
+It's related to the questions about idempotency: a retry can cause data to be duplicated, when it should not be.
+
+Why is “exactly once” processing so hard?
+Usually, it's not necessary to check that data was correctly delivered along each step. Having such a system in place would make 
+it easier to tell if a retry is necessary, but also increases overhead - resources related to checking the data is correctly
+sent and processed.

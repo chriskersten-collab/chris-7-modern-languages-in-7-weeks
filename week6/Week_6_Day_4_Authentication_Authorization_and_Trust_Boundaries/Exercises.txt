@@ -1,0 +1,108 @@
+🧪 Exercise 1 — Authentication vs Authorization (Written)
+
+Answer in your own words:
+
+What is authentication? Checking that a user's credentials are valid.
+
+What is authorization? Check to see whether a user has permission to perform a certain action. For 
+example, admins may have permission to modify any data, and view logs; users can modify data associated with them, but cannot
+see log files or modify someone else's data.
+
+Give one example of each in a Job Application Tracker. 
+Authentication - username and password for the PostgreSQL database. 
+Authorization - there isn't a need for it now, with one user. For multiple users, as in the earlier question, 
+admins may have permission to modify any data, and view logs; users can modify data associated with them, but cannot
+see log files or modify someone else's data.
+
+✍️ 1–2 sentences per question.
+👉 Do not write code.
+
+🧪 Exercise 2 — Trust Boundaries (Critical Concept)
+Answer briefly:
+
+What does it mean to say “the client cannot be trusted”?
+Considering that the internet is a part of nearly every system, the client could be anyone or anything. 
+So, precautions must be taken to restrict access for anonymous users, and to some extent, most authorized users.
+
+Name 3 things a backend must never trust from the client.
+Raw input from the client.
+Authentication / authorization status - the client cannor be trusted to assert that it is authorized.
+Business logic - never processed at the client, the client should only see outcomes.
+
+Where should validation always happen?
+Somewhere other than the client - API or at each server, for example the database.
+
+✍️ Short bullet answers are fine.
+
+🧪 Exercise 3 — API Security Thinking
+
+Imagine this endpoint: DELETE /applications/{id}
+
+Answer briefly:
+
+Who should be allowed to call this? Admins, and possibly a user that created that record. It would be better to
+have another API call for users to hide or deprecate a record they don't want to see.
+
+What checks must happen before deletion? Authentication and authorization, to determine if the person requesting
+deletion has permission.
+
+What could go wrong if these checks are missing? An unauthorized user could delete something.
+
+👉 No code — reason it out.
+
+🧪 Exercise 4 — Authentication Models (Design Thinking)
+
+For each model, write 1 sentence describing:
+What it is
+One risk or downside
+
+Models:
+
+Username + Password - Account name for a user, and a password to allow access - downside is that if a password is too long or 
+complex, the user might write it down.
+
+API Keys - It's a unique code that identifies and authenticates an application or user when they request access to an 
+API, a downside is that they authenticate the application, not usually a user.
+
+Session Cookies - Session cookies are temporary, transient files that websites use to track a user's activity during 
+a single browsing session, holding information like login status or shopping cart contents, and are automatically deleted 
+when the browser is closed, good for storing state, not meant for security - authentication or authorization.
+
+JWT (JSON Web Tokens) - A JSON object that can be included in a URL to authenticate and authorize a user - risks are 
+that they can be easily decoded, or intercepted at the client side.
+
+🧪 Exercise 5 — Failure & Abuse Scenarios
+
+For each scenario, answer:
+What should the system do?
+What should the user see?
+
+Scenarios:
+
+A user tries to delete another user’s application
+The system should not delete the data, and inform the user that they are not allowed to perform that action. 
+This is assuming the user is a regular user account, admins might be allowed to delete another user's data.
+
+A request is missing authentication entirely
+It depends on the type of the request. For data that is specific to a user, the un-authenticated request should be ignored or
+rejected with an error message. There is some data - a public website for example, that an un-authenticated user might
+be allowed to access.
+
+A token is valid but expired
+I suppose it would depend on policy - block requests and tell the user to request a new token, or possibly just replace the
+token without telling the user.
+
+There are no perfect answers — explain tradeoffs.
+
+🧠 Concept Check (Write as Comments)
+
+Answer briefly:
+
+Why should authorization checks live in backend logic, not the UI?
+The client cannot be trusted to authenticate itself, the backend has enough security to authenticate users and grant access.
+
+Why is “security by obscurity” dangerous?
+Eventually, someone will find out, no matter how obscure you think it might be.
+
+Why is logging security events important?
+So that admins, particularly security specialists, can see what happened, to fix any security problems that might happen.

@@ -1,0 +1,61 @@
+🧪 Exercise 1 — Model a Simple System (Written)
+Design a “Job Application Tracker” system.
+
+Answer in words or bullets:
+Who are the clients?
+What data is stored?
+What are the main operations?
+Where does validation happen?
+👉 Do not write code.
+
+Who are the clients? With what I have been working on so far, the client is a command line interface (CLI).
+What data is stored? Sometimes in a PostgreSQL database, other times it is written directly in the code.
+What are the main operations? Store, update, and display data related to applying to jobs.
+Where does validation happen? Currently, by viewing console output. 
+
+
+🧪 Exercise 2 — Identify Boundaries
+Given this feature: “User submits a job application and later checks its status”
+
+Break it into components:
+UI
+API
+Logic
+Storage
+Write 1–2 sentences per component describing its responsibility.
+
+UI: Receives information from the user about their job search, and displays information the user had previously entered.
+API: Transfers data between the UI and logic.
+Logic: Checks user's input for correct formatting when transfering it to storage. Formats data from storage for the user to easily understand. 
+Storage: Database (or simply variables and constants in code) with data about the user's job search. 
+
+🧪 Exercise 3 — Failure Thinking (Critical Skill)
+
+Answer briefly:
+What happens if the database is down? The database or logic should report an error, which the user can understand.
+What happens if the request is duplicated? Logic (usually in SQL schema) prevents duplicate entries in the database. A duplicate request to see data is not a problem, just display the data again.
+What data must never be lost? Company names should not be lost, but can be changed .Contact info for recruiters and other key people can be changed or deleted, but should not be lost.
+There are no perfect answers — only tradeoffs.
+
+
+🧠 Concept Check (Write as Comments)
+
+Answer in 1–2 sentences each:
+Why is system design harder than coding? To properly design a system, one should have experience with all (or some) components of that system, and also experience with the different languages used by the different components. It also requires thinking about the entire system, rather than focusing on just one component or piece of code.
+Why is “simple” often better than “clever”? Clever can be difficult to understand, even by the person who wrote it if they wrote it a long time ago. Simple should alo mean easy to understand, clear. 
+Why do most bugs happen at boundaries? Misunderstanding between groups that specialize in a component, not knowing what data should be passed.
+
+
+⭐ Go Further (Strong Signal) : Draw your system as ASCII boxes + arrows
+
+ +--------------+      +----------------------+      +------------------------+      +--------------------------------+      +-------------------+
+ | User         |      | UI                   |      | API                    |      | Logic                          |      | Storage           |
+ | Reads output | <==> | Accepts user input   | <==> | Transfers data between | <==> | Checks user input for validity | <==> | Database to store |
+ | Enters data  |      | Displays output data |      | the UI and logic.      |      | Formats data from storage      |      | and return data   |
+ +--------------+      +----------------------+      +------------------------+      +--------------------------------+      +-------------------+
+
+⭐ Go Further (Strong Signal) : Explain how this system would change for 1 user vs 1 million users
+For one user, myself, the system runs on my personal laptop. For 1 million users, the system would have to be much more complex:
+- A web interface, including user and admin accounts.
+- Multiple redundant servers in different geographic locations. 
+- Separate servers for database and web. 

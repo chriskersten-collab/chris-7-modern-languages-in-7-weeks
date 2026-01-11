@@ -1,0 +1,166 @@
+Week 6 Day 5 — My Answers
+🧪 Exercise 1 — End-to-End Flow (Big Picture)
+
+Scenario: A user submits a new job application and later checks its status.
+
+Task: Describe the full flow, step by step, from the user action to data persistence and back.
+
+Answer in bullets:
+
+What happens in the UI?
+- UI receives information from the user:
+    - New application
+    - Request to check application status
+- UI displays:
+    - A form for the user to fill out, for their application
+    - Application status when requested
+    - Menus and buttons for the user to select activities, like submit an application and check its status.
+    - Error messages as described in previous days 
+
+What happens at the API boundary?
+- API receives from the UI:
+    - Authentication information from the user
+    - New application
+- API sends to the UI:
+    - Error messages
+    - Application status
+
+What does backend logic do?
+- Convert data between the API format, probably JSON, and the database, could be JSON, CSV, something else.
+- Query the database (SQL) to store and retrieve data.
+- Pass errors between the database and API.
+- Logic to determine if the user's submission is properly formatted, and who should have access to it.
+- Generate errors related to problems with a user's submission.
+
+What does the database do?
+- Store and retrieve data for the backend.
+- Generate errors related to queries - No record found, permission denied, etc.
+
+What is returned to the user?
+- It's described in what the UI displays, assuming it's a web interface with graphics and text, but no sound.
+- UI displays:
+    - A form for the user to fill out, for their application
+    - Application status when requested
+    - Menus and buttons for the user to select activities, like submit an application and check its status.
+    - Error messages as described in previous days 
+
+👉 Focus on responsibilities, not implementation details.
+
+
+🧪 Exercise 2 — Validation Strategy (Layered Thinking)
+For each layer below, answer what validation happens there and why.
+
+Layers:
+
+UI: Validates required fields to give fast feedback. Validates data types for all fields. 
+Checks for constraints on field length, and numeric range.
+
+API / Backend: Validates business rules to enforce correctness. Check authentication and authorization. Additional
+check for validity of user-submitted data: format, data type, length, range, etc.  
+
+Database: Enforces invariants to protect data integrity. Validate queries to protect data integrity. 
+Check authentication and authorization.
+
+Example format:
+UI: validates required fields to give fast feedback
+API: validates business rules to enforce correctness
+DB: enforces invariants to protect data integrity
+
+👉 1–2 sentences per layer.
+
+🧪 Exercise 3 — Error Classification (Professional Skill)
+For each error, answer:
+    - Is it client error, server error, or infrastructure error?
+    - What should the user see?
+    - What should be logged internally?
+
+Errors:
+
+Invalid input (applications_sent = -1)
+    - Is it client error, server error, or infrastructure error? Client error.
+    - What should the user see? Invalid number of applications sent. Enter a positive number.
+    - What should be logged internally? What the user entered, response generated, date and time of the error.
+
+Duplicate application submission
+    - Is it client error, server error, or infrastructure error? Could be any or all. 
+    - What should the user see? It depends: If it's a client error, then tell the user that a duplicate submission was received.
+        It could also be a server error or infrastructure error - a retry after timeout, though confirmation of the submission
+        was received too late. In that case, no error is to be shown to the user.
+    - What should be logged internally? What the user entered (if anything), response generated, date and time of the error.
+
+Database temporarily unavailable
+    - Is it client error, server error, or infrastructure error? Sounds like a server error or infrastructure error.
+    - What should the user see? Service is temporarily unavailable, try again later.
+    - What should be logged internally? When a query was sent, what the query was, how long before the query timed-out.
+
+Unauthorized delete attempt
+    - Is it client error, server error, or infrastructure error? Probably a client error.
+    - What should the user see? Either nothing, or "Cannot delete, permission denied." It's probably best to soft delete / hide,
+    so it appears to the user that the data they tried to delete is deleted, but it is still stored somewhere. This might
+    be necessary for regulatory compliance.
+    - What should be logged internally?  What the user tried to delete, response generated, date and time of the error.
+
+Unexpected panic / crash
+    - Is it client error, server error, or infrastructure error? Could be either of the three.
+    - What should the user see? Service is temporarily unavailable, try again later.
+    - What should be logged internally? Any log files generated before the crash, and as much information as possible about the
+    state of the system before the crash. Also, of course, date and time.
+
+👉 This is how senior engineers think about errors.
+
+🧪 Exercise 4 — Data Integrity vs User Experience (Tradeoffs)
+Answer briefly:
+If the database write succeeds but the response fails, what is the correct behavior on retry? From the database, return an
+error that the data was already submitted.
+
+Should the system prioritize:
+
+Never duplicating data, Or always showing immediate success? Never duplicating data. 
+
+How do idempotency keys help? An idempotency key would help to prevent a duplicate request from being stored in the database.
+
+👉 There is no perfect answer — explain your tradeoffs.
+
+🧪 Exercise 5 — Security Review (Threat Modeling Lite)
+Answer briefly:
+
+What is the most dangerous operation in a Job Application Tracker? When the user requests to delete a record. 
+Probably anything from the UI.
+
+What checks must happen before it runs? Authentication, authorization, multiple layers of input validation - 
+UI, API, backend, database.
+
+What should never be revealed in error messages? Clues about the language(s) or applications used - Are there errors specific
+to PostgreSQL? Can the user guess the language or other details about the system based on error messages? All they need to see
+is something more general - Invalid input, here's an example of valid data. - Timeout / unavailable, try again later. 
+- Maybe something about authentication failed.
+
+Why should audit logs be immutable? It's tempting to say everything, but that might take too much space. It's probably a good
+idea to consult with an expert on regulatory compliance, to set policies for what data must be logged, and how long
+records must be retained. It would also make sense to log as much as possible temporarily, and immutably store more important
+information, such as access attempts, deletion attempts, changes to access levels, basic information about a bug or crash - 
+when, what, who.
+
+👉 Think like an attacker, then defend.
+
+🧠 Concept Check (Short Answers)
+Answer in 1–2 sentences each:
+
+Why is correctness more important than performance early on? Early on, there might be one user or just a few users. It's 
+easy to have good performance at such a small scale, and poor performance would waste time for one or a few people.
+Correctness sounds like it should always be important, also easier to verify at a smaller scale. Once good correctness
+is established, then performance can be improved - software optimizations, upgrading hardware. At some point, performance
+improvements will be necessary to scale for additional users.
+
+Why do “simple” systems scale better than clever ones? Probably a similar reason why code should be simple and easy to read,
+rather than clever. Even the person who wrote or made it might not remember how and why such a clever system was made.
+This could lead to problems with maintainence, and of course, one would need to know how code and other components
+of a system work to be able to scale it.
+
+Why are invariants best enforced at the database layer? Invariants are best enforced at the database layer because 
+it provides the strongest guarantee of data integrity across all applications and interactions. 
+This approach ensures that data remains consistent and valid regardless of how it is accessed or modified. 
+
+Why is retry logic dangerous without idempotency? There is a risk of creating duplicate records in the database. The 
+database schema should also protect against duplicate records, but an idempotency key is another good layer 
+of protection.
