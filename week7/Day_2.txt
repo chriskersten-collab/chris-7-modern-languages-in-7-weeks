@@ -1,0 +1,116 @@
+Week 7 Day 2 answers
+
+🧪 Exercise 1 — What Is Hexagonal Architecture? (Written)
+Answer in your own words:
+
+What problem does hexagonal architecture solve? Technical Debt & Complexity: Reduces accidental complexity 
+by separating essential business logic from mandatory technical details, 
+preventing them from mixing and creating unmanageable code.
+
+How is it different from layered architecture? Hexagonal focuses on business isolation via explicit boundaries (ports), 
+while Layered focuses on technical separation with implicit dependencies, 
+risking domain logic getting tangled with infrastructure. 
+
+Why is it also called “Ports & Adapters”? Because there are technology-independent interfaces defined by the core, 
+called ports, which specify how the application communicates, and implementations, called adapters, which translate
+between the port's contract and a specific technology.
+
+
+✍️ 1–2 sentences per question.
+👉 No code.
+
+🧪 Exercise 2 — Identify the Hexagon (Critical Thinking)
+
+For a Job Application Tracker:
+
+List what belongs inside the hexagon (core domain logic):
+
+What rules? The core business logic and associated application-specific rules (use cases), such as rejecting identical applications.
+
+What decisions? Decisions about core entities, value objects, and business rules related to what the application does.
+
+What data models? The core business logic.
+
+Then list what belongs outside the hexagon:
+
+UI - Data transfer objects for the command line interface, and web interface.
+
+Database - Data transfer objects for the database, and schema.
+
+External services - Databases, user interfaces, testing interfaces.
+
+Frameworks - Web, UI, CLI, automated testing.
+
+👉 Bullets are fine.
+
+
+🧪 Exercise 3 — Ports vs Adapters (Key Skill)
+
+Given these components, label each as a Port or an Adapter, and explain why:
+
+ApplicationRepository - Port, looks like it interfaces with PostgresApplicationRepository.
+
+PostgresApplicationRepository - Adapter, to implement the database
+
+JobApplicationService - Port, probably interfaces with the UI.
+
+HTTPController - Adapter, to interface with HTTP.
+
+CLIHandler - Adapter, to interface with a CLI.
+
+EmailNotificationService  - Adapter, to interface with email.
+
+✍️ 1 sentence each.
+
+🧠 Hint:
+
+Ports are interfaces defined by the core
+
+Adapters implement or call those interfaces
+
+
+🧪 Exercise 4 — Dependency Direction (Very Important)
+
+Answer briefly:
+
+1. Which direction do dependencies point in hexagonal architecture? Inward, towards the core.
+
+2. Why is this safer than layered architecture? The core is technology-agnostic, to allow easy swapping of interfaces. 
+
+3. What breaks when dependencies point outward from the core? The ability to easily swap interfaces - If the core is 
+dependent on interfaces, a change to an interface might mean changing the core.
+
+👉 Think in terms of who imports whom.
+
+
+🧪 Exercise 5 — Replaceability Thought Experiment
+
+Imagine:
+
+Today: PostgreSQL + CLI
+
+Tomorrow: DynamoDB + Web UI
+
+Next year: Event-driven + Mobile app
+
+Answer briefly:
+
+What should change? Interfaces for the database, and UI.
+
+What should not change? The core business logic.
+
+Why does hexagonal architecture make this possible? The interfaces are dependent on the core, so interfaces can be 
+added, changed, or removed without changing the core.
+
+🧠 Concept Check (Senior-Level)
+
+Answer briefly:
+
+Why is business logic the most expensive code to change? In hexagonal architecture, every interface is dependent on the 
+business logic, so a change to business logic would drive changes (or at least reviews) of every interface.
+
+Why should frameworks be treated as “details”? To keep the core business logic independent of external technologies.
+
+Why does hexagonal architecture make testing easier? If the interfaces are dependent only on the core, and independent
+of each other, then each interface could be relatively simple, and easily tested. It's related to the interfaces 
+being modular.

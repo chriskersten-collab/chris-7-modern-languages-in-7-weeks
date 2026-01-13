@@ -1,0 +1,89 @@
+Week 7 Day 4 answers
+
+🧪 Exercise 2 — What Should Be Async? (Critical Thinking)
+
+For a Job Application Tracker, decide:
+
+Should these be synchronous or async?
+
+Answer sync or async, with one reason each.
+
+Operation	                Sync or Async?	Why?
+Save application to DB		Sync            To avoid duplicate records in the database.
+Send confirmation email	    Async	        No need to make it sync, and also there usually isn't confirmation that an email was delivered.
+Validate input		        Sync            Can't proceed until the input is validated.
+Check authorization		    Sync            Can't do anything more until authorization is validated.
+Send analytics event		Async           It can be independent of other events.
+Generate weekly report		Async           It can be independent of other events.
+
+👉 Think about latency, reliability, and user experience
+
+
+🧪 Exercise 3 — Background Workers (Core Concept)
+
+Answer briefly:
+
+What is a background worker? A background worker is a separate, independent process or thread 
+that performs long-running or intensive tasks (like sending emails, generating reports, or syncing data) 
+in the background, preventing them from freezing or slowing down the main application's user interface (UI).
+
+Why are background workers used? Background workers are crucial for improving application performance, 
+scalability, and reliability by offloading time-consuming tasks (like sending emails, processing data, or generating reports) 
+from the main user-facing process, ensuring the front end remains fast and responsive for users.
+
+What kinds of failures are background workers especially good at handling? Background workers are particularly effective 
+at handling failures that involve retries of transient errors, such as temporary network outages or 
+database connection time-outs. They are also well-suited for managing partial failures in long-running jobs, 
+enabling the operation to resume from a saved state rather than restarting from scratch. 
+
+✍️ 1–2 sentences per answer
+
+
+🧪 Exercise 4 — The Outbox Pattern (Very Important)
+
+Read carefully, then answer:
+
+Scenario
+- User submits application
+- App is saved to DB
+- Email must be sent
+- System crashes right after DB commit
+
+Questions
+
+What went wrong? Probably something went wrong with sending an email. 
+
+Why is retrying dangerous here? Duplicate records - Assuming the user was expecting a confirmation email, they might 
+re-submit their application after waiting for an email.
+
+What problem does the outbox pattern solve? Dual writes, unnecessary retries.
+
+✍️ Short answers — correctness matters more than wording
+
+
+🧪 Exercise 5 — Event-Driven Thinking
+
+Answer briefly:
+
+What is an event? Events are notifications that something happened (e.g., a mouse click) that trigger code. 
+
+How is an event different from a function call? A function is called (possibly by an event) while an event is
+a notifications that something happened.
+
+Why are events useful for scaling systems? Events allow for delays and asynchronous behavior, while functions are synchronous.
+
+✍️ 1–2 sentences each
+
+
+🧠 Concept Check (Senior-Level)
+
+Answer briefly:
+
+Why should APIs return success before background work finishes? APIs should return success before background work finishes 
+primarily to improve responsiveness, prevent network timeouts, and enhance scalability and user experience. 
+
+Why should background jobs be idempotent? To prevent errors, data corruption, and duplicate actions.
+
+Why is “exactly-once delivery” rare in distributed systems? Because it's extremely difficult to guarantee due to 
+network failures, system crashes, and timing issues, leading to potential message loss (at-most-once) or 
+duplication (at-least-once) before confirmation.

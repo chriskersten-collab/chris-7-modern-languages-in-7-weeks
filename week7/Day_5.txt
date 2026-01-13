@@ -1,0 +1,166 @@
+Week 7 Day 5 answers
+
+🧪 Exercise 1 — Design a Production Flow (Big Picture)
+
+Scenario:
+
+A user submits a job application.
+The system must:
+- Save it
+- Prevent duplicates
+- Send confirmation email
+- Record analytics
+- Remain correct if anything crashes
+
+Task
+
+Describe the ideal production flow, step by step, using layers and async boundaries.
+1. User submits application
+2. Web interface validates the application
+3. Core validates the application, authenticates the user, and checks authorization.
+4. Core sends the application to the database
+5. Database confirms the application was received.
+6. Core receives the confirmation from the database, generates an email for the user.
+7. Email system sends the email to the user.
+
+Answer in bullets:
+- What happens synchronously? Steps 3, 4, 5.
+- What happens asynchronously? Steps 1, 2, 6, 7.
+- Where are transactions? 
+    - Steps 1 and 2,
+    - Step 3
+    - Steps 4, 5, and 6
+    - Step 7
+- Where is idempotency enforced? Steps 4, 5, and 6, the database transaction.
+- What happens if the system crashes at each step?
+    - Step 1 or 2: User notices the website is down, tries again later or gives up. Application is lost if the user doesn't retry.
+    - Step 3: No confirmation is sent to the user, they might retry eventually. Application is lost if the user doesn't retry.
+    - Step 4: Possible database corruption!
+    - Step 5: The core might re-try the database submission, if retries are part of the business logic. No confirmation is sent to the user, they might retry eventually.
+    - Step 6 or 7: No confirmation is sent to the user, they might retry eventually.
+
+👉 Focus on why each decision is made.
+
+
+🧪 Exercise 2 — Identify the “Source of Truth”
+
+Answer briefly:
+
+What is the source of truth for job applications? The database, also user input once it has been validated.
+
+What systems derive data from it? Core logic, and the email system by way of core logic.
+
+What must never be treated as a source of truth? User input, before it has been validated.
+
+Example phrasing:
+
+“X is the source of truth because…”
+
+“Y must never be trusted because…”
+
+
+🧪 Exercise 3 — Failure Matrix (Senior Skill)
+
+Fill this out in words (no tables needed):
+
+For each failure, answer:
+- What happens?
+- What invariant must hold?
+- What should the user see?
+
+Failures:
+
+DB commit succeeds, email worker is down
+- What happens? User doesn't receive a confirmation email.
+- What invariant must hold? Confirmation from the email worker
+- What should the user see? Possibly a message on the UI - website or CLI, that the confirmation email is delayed.
+
+DB commit fails, API crashes mid-request
+- What happens? Database is not updated, possibly corrupted.
+- What invariant must hold? Checks to avoid duplicate database writes - idempotency key, confirmation from the database.
+- What should the user see? A message to wait, maybe a message to try again, if the API crash causes the pending update 
+to be lost.
+
+API succeeds, client never receives response
+- What happens? Client might time-out, the user might not see a confirmation message. This is assuming that "client" 
+means an interface between the API and the user. Client could mean other interfaces, such as to a repository or
+email service.
+- What invariant must hold? It depends on what kind of transaction - if it's updating the database, then an idempotency key,
+and also propections within the database for rejecting duplicate data would be the invariants. For sending confirmation to
+the user, the invariant would be confirmation from the UI that the UI update is successful.
+- What should the user see? If the client is the user interface, the UI would probably timeout with a generic failure message.
+
+Background job runs twice
+- What happens? Supposing that the background job is something like sending a confirmation email or generating a report, the
+user (or person receiving the report) would be inconvenienced by receiving a duplicate.
+- What invariant must hold? The email and reporting systems.
+- What should the user see? Typical users shouldn't see anything, but might receive a duplicate email. Users of the reporting
+system would also see a duplicate report, though in normal operation, they should not.
+
+Analytics service is offline for a day
+- What happens? The type of user with access to analytics doesn't receive anything.
+- What invariant must hold? The analytics reporting system.
+- What should the user see? If the user is a consumer of the analytics, then they should see a warning that the analytics
+service is unavailable.
+
+👉 This is about correctness over convenience.
+
+
+🧪 Exercise 4 — Architectural Tradeoffs
+
+Answer briefly:
+
+Why do we prefer at-least-once delivery + idempotency over exactly-once? In case there is a failure, the system can re-try.
+Idempotency adds protection against duplicate database entries.
+
+Why are background jobs safer than inline side effects? Background jobs are safer than inline side effects 
+primarily because they isolate complex, mutable operations from the main application flow.
+
+Why do we accept eventual consistency in some parts of the system? Because it offers significant trade-offs 
+that are often more valuable than immediate consistency. 
+
+👉 Use real-world reasoning, not theory.
+
+
+🧪 Exercise 5 — Security + Reliability Review
+
+Answer briefly:
+
+What is the most dangerous async operation in this system? Considering the table from day 4,
+
+Operation	                Sync or Async?	Why?
+Save application to DB		Sync            To avoid duplicate records in the database.
+Send confirmation email	    Async	        No need to make it sync, and also there usually isn't confirmation that an email was delivered.
+Validate input		        Sync            Can't proceed until the input is validated.
+Check authorization		    Sync            Can't do anything more until authorization is validated.
+Send analytics event		Async           It can be independent of other events.
+Generate weekly report		Async           It can be independent of other events.
+
+None of these async operations appear dangerous, probably the most dangerous is sending a confirmation email,
+since a user would notice something has gone wrong if there is no confirmation email, or a duplicate.
+
+What must be logged for auditability? Some information about the type of request - update, authentication, query. Also,
+who made the request, and when. There might be regulatory compliance considerations for what to log, not so much
+in this application tracker, but in similar systems.
+
+What data should never appear in logs? Users' personal information, and other confidential data.
+
+What operation should require the strongest authorization checks? Escalating permission from anonymous user to
+a normal user account, or from a normal user to an admin account.
+
+
+🧠 Final Concept Check (Very Important)
+
+Answer in 1–2 sentences each:
+
+Why is “correct but slow” better than “fast but wrong”? Because correct answers ensure reliability, safety, and effectiveness, 
+which are often non-negotiable prerequisites for the desired outcome.
+
+Why is deleting data harder than creating data? Because it requires more complex logic to maintain data integrity.
+
+Why does production engineering focus more on failure than success? It's relatively easy to define success, and design for it.
+Knowing and intuitively determining failures requires more experience and creativity. It also takes much more resources
+to design and test for failures.
+
+Why is simplicity a reliability feature? It sounds like topics covered earlier - if software components are broken into
+relatively small, simple modules, they can be more easily tested to assure reliability.

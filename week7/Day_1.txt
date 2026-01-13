@@ -1,0 +1,101 @@
+Week 7 Day 1 answers
+
+🧪 Week 7 Day 1 — Exercises
+🧪 Exercise 1 — Identify Responsibilities (Written)
+
+For a Job Application Tracker, answer briefly:
+
+Controller / API Layer
+What should it do? Request handling from user(s), input validation, present data and forms to the user.
+What should it NOT do? Business logic.
+
+Service Layer
+What logic belongs here? Business logic, authentication and authorization
+What must never happen here? Direct access from a user.
+
+Repository Layer
+What does it abstract? The database, or other persistent storage. 
+What assumptions should it avoid? Assuming a Specific Persistence Technology, assuming Specific Performance Needs
+
+👉 1–2 bullets per layer.
+👉 No code.
+
+🧪 Exercise 2 — Boundary Violations (Critical Thinking)
+
+For each case, answer:
+Which layer is violated?
+Why is it a problem?
+
+1. API endpoint runs SQL directly
+Which layer is violated? Repository layer
+Why is it a problem? The repository layer should be generating SQL queries, so that it doesn't matter whether it's a 
+SQL or other type of database.
+
+2. Database enforces business rules like “max 5 applications per day”
+Which layer is violated? Service layer
+Why is it a problem? The service layer should contain all of the business logic, while the database should store and retrieve
+data for the repository layer.
+
+3. Service returns raw SQL error messages to the UI
+Which layer is violated? Service layer
+Why is it a problem? Part of the repository layer should be to abstract from database-specific access to a 
+non-database-specific communication to the service layer. The service layer should apply business logic, and then pass
+some information, if appropriate, to the UI.
+
+4. Repository performs authorization checks
+Which layer is violated? Service layer
+Why is it a problem? The service layer should handle authentication and authorization.
+
+👉 Short answers. Precision matters.
+
+🧪 Exercise 3 — Error Ownership
+
+For each error, decide which layer should detect it first:
+
+Error	                    Layer
+Missing required field	    Controller, UI can perform an initial check whether data is valid.
+Invalid business rule	    Service, contains business logic.
+Duplicate database record	Repository, the database would detect (and should reject) an attempt to add a duplicate record, no other layers would know whether the request to add a record is a duplicate.
+Database timeout	        Repository, similarly, no other layers would have that information, and the repository layer provides abstraction for the database.
+Unauthorized action	        Service, contains authentication and authorization.
+
+👉 One sentence per row explaining why.
+
+
+🧪 Exercise 4 — Why Layers Exist (Big Picture)
+
+Answer in your own words:
+
+Why not put everything in the API layer? Tightly Coupled Code - difficult to maintain or scale, Reduced Testability - too much complexity, 
+
+Why not let services talk directly to the database? With a database abstraction layer, the database can be changed without changes to the service layer.
+
+Why does layering help testing? To break a large, complex system into smaller, more easily tested components. 
+
+Why does layering help scaling teams? Different layers can be delegated to different teams, which specialize in their layer.
+
+👉 1–2 sentences per question.
+
+⭐ Go Further (Strong Signal)
+
+Answer one:
+
+Explain how layered architecture helps replace PostgreSQL with another database. As mentioned above, the repository layer should
+provide abstraction for the database itself. Changing the database from PostgreSQL to something else would require a change to
+the repository layer, but should not require changes to anything else. 
+
+OR explain how it helps add a web UI later without rewriting logic. Similarly, it should be possible to add features to the 
+controller, such as a web UI, without changing other layers. 
+
+🧠 Concept Check (Senior-Level Thinking)
+
+Answer briefly:
+
+Why is “fat service, thin controller” a common rule? Security and reliability, a simple controller is easier to secure, and 
+easier to test.
+
+Why should repositories be boring? The data access logic is intended to be simple, predictable, 
+and focused purely on persistence, thereby making the main business logic more interesting and 
+less coupled to infrastructure concerns. 
+
+What happens when layers are skipped “just this once”? Scalability becomes a problem eventually.

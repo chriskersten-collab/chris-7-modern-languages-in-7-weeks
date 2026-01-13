@@ -1,0 +1,117 @@
+Week 7 Day 3 answers
+
+🧪 Exercise 1 — What Is a Transaction? (Written)
+
+Answer in your own words:
+
+What is a transaction? A sequence of operations that must be treated as a single, indivisible unit.
+
+What does it mean for a transaction to be atomic? For a transaction to be atomic means it's treated as a single, 
+indivisible "all-or-nothing" operation.
+
+Why do transactions exist? Transactions in computing and databases exist 
+primarily to ensure data integrity and system reliability by grouping multiple operations into a single, 
+indivisible unit of work.
+
+✍️ 1–2 sentences per question
+👉 No code
+
+
+🧪 Exercise 2 — Identify Transaction Boundaries
+
+Consider this flow:
+
+User submits a job application
+→ backend validates
+→ application is saved
+→ confirmation email is sent
+
+Answer briefly:
+
+What steps must be in the same transaction? Backend validates, application is saved.
+
+What steps must NOT be in the same transaction? User submits a job application, confirmation email is sent.
+
+Why? 
+
+👉 Think about failure cases.
+
+
+🧪 Exercise 3 — Partial Failure Scenarios (Critical Skill)
+
+For each scenario, answer:
+What happened?
+What is the risk?
+What should the system do?
+
+Scenario A
+Database insert succeeds, email sending fails.
+What happened? Probably a failure between the database and email interfaces, it's possible but not likely to be a problem with
+the core logic. It's most likely to be a problem with email.
+What is the risk? User does not receive a confirmation email, so they re-submit their application.
+What should the system do? If the system gets some feedback about the email failure, then try to send the email
+again after a delay. The UI could also inform the user that a confirmation email will be sent eventually, or the UI
+could also show a confirmation message.
+
+Scenario B
+Email is sent, database insert fails.
+What happened? Assuming it's not a duplicate submission, it might be a problem with the database server, or database interface.
+What is the risk? The user thinks that their application has been successfully received, when it has not.
+What should the system do? Re-try the database insert a few times, with a delay between re-tries. If every attempt failed,
+ask the user to re-submit their application.
+
+Scenario C
+Database insert succeeds, API response times out, client retries.
+What happened? Could be a network issue, or a problem with the client.
+What is the risk? A duplicate submission.
+What should the system do? Reject the duplicate submission, if the user re-tries.
+
+👉 This exercise separates juniors from seniors.
+
+
+🧪 Exercise 4 — Side Effects vs State Changes
+
+Answer briefly:
+
+What is a side effect? Potential data inconsistencies and performance issues that arise, primarily due to concurrent access 
+to shared data or system failures, if not managed correctly. 
+
+Give 2 examples of side effects in a Job Application Tracker.
+Non-Repeatable Reads: A transaction reads the same data twice but gets a different value each time because another 
+committed transaction modified it in between the reads.
+Phantom Reads: A transaction runs a query twice but gets a different set of rows (e.g., more or fewer rows) the second time, 
+due to another committed transaction inserting or deleting rows in between the reads. 
+
+Why are side effects dangerous inside transactions? 
+Because they can lead to inconsistent states and violate the crucial ACID properties, 
+particularly atomicity and isolation.
+
+✍️ No code.
+
+
+🧪 Exercise 5 — Idempotency Meets Transactions
+
+Answer briefly:
+
+Why does idempotency matter inside transactions? To avoid duplicate records, or similar side effects.
+
+What breaks if retries are not idempotent? There could be a duplicate record.
+
+How does a database UNIQUE constraint help? It's another way to protect against duplicate records.
+
+
+🧠 Concept Check (Senior-Level)
+
+Answer in 1–2 sentences each:
+
+Why is “send email” almost never inside a DB transaction? Since email is less reliable than a database, a failure in the
+"send email" part of the transaction would lead to a retry of the entire transaction. The retry would either fail because
+the database rejects the duplicate, or worse, the re-try could create a duplicate record.
+
+Why are retries more dangerous than failures? Probably because of duplicate records or database side effects.
+
+Why do distributed systems avoid long-lived transactions? 
+Distributed systems avoid long-lived transactions primarily due to the severe performance bottlenecks, 
+reduced availability, and increased complexity they introduce. 
+Traditional short-lived transactions (ACID) rely on locking mechanisms that are inefficient in a distributed environment 
+where network latency and partial failures are unavoidable. 
