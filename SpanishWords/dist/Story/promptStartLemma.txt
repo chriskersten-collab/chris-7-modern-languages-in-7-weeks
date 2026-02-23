@@ -1,0 +1,1 @@
+Given this list of words, make a word list with each word on a new line. Please convert all words to their lemmas, omit articles in this list, and do not repeat words. This is the list of words: 

@@ -1,0 +1,1 @@
+{"day": 1, "send_url_template": "https://google.com/?q={prompt}", "num_words": 100}
