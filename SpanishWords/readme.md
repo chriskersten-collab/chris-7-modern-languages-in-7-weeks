@@ -1,0 +1,2 @@
+ShortWordList.csv is based on (https://en.wiktionary.org/wiki/User:Matthias_Buchmeier/Spanish_frequency_list-1-5000) licensed under CC-SA-4.0 . License link: [CC-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/ )
+Other files are by Chris Kersten, also [CC-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/ )
