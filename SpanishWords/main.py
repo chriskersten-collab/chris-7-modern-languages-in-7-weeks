@@ -46,6 +46,50 @@ def generate_prompt():
     update_prompt()
 
 
+def increment_day_and_generate():
+    global day
+    sync_day_from_entry()
+    day += 1
+    day_var.set(str(day))
+    generate_prompt()
+
+
+def decrement_day_and_generate():
+    global day
+    sync_day_from_entry()
+    day = max(1, day - 1)
+    day_var.set(str(day))
+    generate_prompt()
+
+
+repeat_job = None
+repeat_action = None
+
+
+def run_repeat_action():
+    global repeat_job
+    if repeat_action is None:
+        return
+    repeat_action()
+    repeat_job = root.after(120, run_repeat_action)
+
+
+def start_auto_repeat(action):
+    global repeat_job, repeat_action
+    stop_auto_repeat()
+    repeat_action = action
+    action()
+    repeat_job = root.after(350, run_repeat_action)
+
+
+def stop_auto_repeat(event=None):
+    global repeat_job, repeat_action
+    if repeat_job is not None:
+        root.after_cancel(repeat_job)
+        repeat_job = None
+    repeat_action = None
+
+
 def copy_prompt():
     prompt_value = prompt_text.get('1.0', 'end-1c')
     root.clipboard_clear()
@@ -63,12 +107,19 @@ def send_prompt():
 
 def update_prompt():
     # read in the word list and get the short list for the current day
-    word_list = pd.read_csv('ShortWordList.csv', header=None)
+
+    # read in ShortWordList.txt as a Python list of strings, one per line
+    with open('ShortWordList.txt', 'r') as file:
+        word_list = [line.strip() for line in file]
+
+    #word_list = pd.read_csv('ShortWordList.csv', header=None)
     start_index = (day - 1) * num_words
     end_index = start_index + num_words
-    short_list = word_list.iloc[start_index:end_index]
+
+    short_list = word_list[start_index:end_index]
+    
     # make a string of the words in the short list, separated by commas
-    short_list_string = ', '.join(short_list[0])
+    short_list_string = ', '.join(short_list)
     # read in promptStart.txt and print the contents
     with open('promptStart.txt', 'r') as file:
         prompt_start = file.read()
@@ -78,8 +129,12 @@ def update_prompt():
 
 root = tk.Tk()
 root.title("Prompt Generator")
-day_frame = tk.Frame(root)
-day_frame.pack()
+day_controls_frame = tk.Frame(root)
+day_controls_frame.pack()
+decrement_button = tk.Button(day_controls_frame, text="-", width=3)
+decrement_button.pack(side=tk.LEFT)
+day_frame = tk.Frame(day_controls_frame)
+day_frame.pack(side=tk.LEFT)
 day += 1
 day_label = tk.Label(day_frame, text="Day:")
 day_label.pack(side=tk.LEFT)
@@ -88,6 +143,16 @@ day_entry = tk.Entry(day_frame, textvariable=day_var, width=6)
 day_entry.pack(side=tk.LEFT)
 day_entry.bind('<Return>', lambda event: sync_day_from_entry())
 day_entry.bind('<FocusOut>', lambda event: sync_day_from_entry())
+increment_button = tk.Button(day_controls_frame, text="+", width=3)
+increment_button.pack(side=tk.LEFT)
+
+decrement_button.bind('<ButtonPress-1>', lambda event: start_auto_repeat(decrement_day_and_generate))
+decrement_button.bind('<ButtonRelease-1>', stop_auto_repeat)
+decrement_button.bind('<Leave>', stop_auto_repeat)
+increment_button.bind('<ButtonPress-1>', lambda event: start_auto_repeat(increment_day_and_generate))
+increment_button.bind('<ButtonRelease-1>', stop_auto_repeat)
+increment_button.bind('<Leave>', stop_auto_repeat)
+
 generate_button = tk.Button(root, text="Generate Prompt", command=generate_prompt)
 generate_button.pack()
 
