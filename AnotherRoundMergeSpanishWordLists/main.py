@@ -109,9 +109,11 @@ def main():
         writer = csv.writer(file)
         writer.writerows(dupe_check)
 
-    # output the second column of the dupe check list to a txt file called FinalList.txt
-    with open('FinalList.txt', 'w', encoding='utf-8') as file:
+    # Remove single letter lines from the dupe check list and save it to a new file called SingleLettersRemoved.txt
+    # The new file should contain only the second column of the dupe check list, which is the lemma
+    with open('SingleLettersRemoved.txt', 'w', encoding='utf-8') as file:
         for item in dupe_check:
-            file.write(item[1] + '\n')
-
+            if len(item[1]) > 1:
+                file.write(item[1] + '\n')
+    
 if __name__ == "__main__":    main()

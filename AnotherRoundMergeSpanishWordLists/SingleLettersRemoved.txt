@@ -3,9 +3,7 @@ de
 no
 ser
 el
-a
 la
-y
 en
 este
 un
@@ -62,7 +60,6 @@ otro
 mucho
 deber
 gracias
-o
 saber
 venir
 son
@@ -415,7 +412,6 @@ sra
 ganar
 tio
 recuerdo
-e
 tranquilo
 john
 oportunidad
@@ -1270,7 +1266,6 @@ cinta
 sucio
 fecha
 famoso
-i
 digame
 tonterias
 tercero
@@ -1440,7 +1435,6 @@ pecho
 cuesta
 molestar
 lago
-b
 chino
 obviamente
 inmediato
@@ -1509,7 +1503,6 @@ amante
 botella
 aquellos
 ultimamente
-s
 periodico
 kate
 juez
@@ -1527,7 +1520,6 @@ ross
 discutir
 mostrar
 evidencia
-c
 tomare
 presente
 scott
@@ -1581,7 +1573,6 @@ perdoname
 reino
 clave
 jake
-r
 plata
 universo
 politica
@@ -1731,7 +1722,6 @@ jones
 des
 tratado
 urgencia
-u
 raymond
 muneca
 firme
@@ -1746,7 +1736,6 @@ rescate
 enfrente
 comienzo
 arboles
-x
 queso
 frontera
 jueves
@@ -1780,7 +1769,6 @@ alcance
 smith
 secretario
 desierto
-t
 licencia
 fiona
 proceso
@@ -1937,7 +1925,6 @@ morira
 vision
 montanas
 jeff
-d
 comido
 construir
 comunidad
@@ -2115,7 +2102,6 @@ cristal
 Bourne
 Amy
 caido
-j
 sensacion
 seguido
 whisky
@@ -2338,7 +2324,6 @@ destruccion
 terry
 paraiso
 alternativa
-w
 ocasion
 salsa
 Rome
@@ -2431,7 +2416,6 @@ emocionante
 desgracia
 cientifico
 buddy
-v
 terapia
 Phil
 patrulla
@@ -2533,7 +2517,6 @@ despedida
 golf
 defender
 crecer
-n
 comunicacion
 probado
 hablame
@@ -2646,7 +2629,6 @@ coraje
 aterrizar
 actuacion
 vietnam
-h
 cynthia
 ayudante
 vaca
@@ -2672,7 +2654,6 @@ preparate
 confundido
 sufrimiento
 saludo
-l
 golpear
 garaje
 buscare
@@ -2720,7 +2701,6 @@ existencia
 clara
 alcanzar
 octubre
-g
 barato
 apostar
 requerir
@@ -2855,7 +2835,6 @@ encender
 cercano
 pasta
 sabras
-p
 morgan
 limpieza
 estadounidense
@@ -2875,7 +2854,6 @@ pastilla
 ceremonia
 tina
 muelle
-k
 desconocido
 conseguire
 taylor
