@@ -52,6 +52,9 @@ def update_prompt():
     #start_index = (day - 1) * number_of_new_words
     end_index = review_pointer + number_of_new_words
 
+    if end_index > len(word_list):
+        end_index = len(word_list)
+
     short_list = word_list[review_pointer:end_index]
     
     # make a list called review_list that contains number_of_words_to_review words
@@ -90,12 +93,20 @@ update_prompt()
 root.mainloop()
 
 
+with open('ShortWordList.txt', 'r') as file:
+    word_list = [line.strip() for line in file]
+
+print(f"Length of word list: {len(word_list)}")
+
+update_review_pointer = review_pointer + number_of_new_words
+if update_review_pointer > len(word_list):
+    update_review_pointer = len(word_list)
 
 # save day and send_url_template to a JSON file
 # config['day'] = day
 config['send_url_template'] = send_url_template
 config['number_of_new_words'] = number_of_new_words
 config['number_of_words_to_review'] = number_of_words_to_review
-config['review_pointer'] = review_pointer + number_of_new_words
+config['review_pointer'] = update_review_pointer
 with open('config.json', 'w') as file:
     json.dump(config, file)
