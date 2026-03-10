@@ -1,0 +1,1 @@
+{"send_url_template": "https://www.google.com/search?q={prompt}", "number_of_new_words": 6, "number_of_words_to_review": 6, "review_pointer": 0}
